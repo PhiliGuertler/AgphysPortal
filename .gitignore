@@ -1,0 +1,8 @@
+build/
+agphys
+**.swp
+**.swo
+.vs/
+**.json
+cuda_script
+imgui.ini

@@ -1,0 +1,88 @@
+### Bekannte Bugs (Wichtig) ###
+- Wasser muss unbedingt ein wenig vom Level gepaddet werden, um nicht super hässlich gezeichnet zu werden. Am besten wird ein drittes, unsichtbares Level nur für's wasser-padding eingebaut.
+- [Leichte Verbesserung] Die Kamera dreht sich nicht richtig, wenn der Spieler durch ein Portal springt.
+
+### Bekannte Bugs (Optional) ###
+- [Optional] Die Kamera sollte bei einem Sprung durch ein Portal nach dem eigentlichen Spieler (den Füßen) teleportiert werden...
+- [Optional] Die Skybox wird mit der neu berechneten Near-Plane nicht mehr in den Portalen gezeichnet.
+
+### Feature Requests, die Punkte ausmachen könnten ###
+- Die Farbgebung des Levels wäre mir vereinheitlicht lieber, zum Beispiel bekommen alle Böden eine Textur, alle Decken eine leicht andere und alle Wände wieder eine andere.
+  Die Portalflächen sollten auch etwas mehr herausstechen.
+- Wasser ist im aktuellen Level noch nicht platziert, das sollte am besten noch geändert werden.
+- ImGui aufräumen von allen Dingen, die potenziell Sachen kaputt machen könnten.
+- README mit der Steuerung und anderem Kram auffüllen
+
+### Feature Requests, die vermutlich keine Punkte ausmachen, aber echt nett wären ###
+- [[Implementiert]] Steuerung anpassen: Statt F6 eine sinnvollere Taste (wie ESC) zum wechseln ins Menü verwenden. Am besten übernimmt ESC gleich die Funktionen von F3 und F6 zusammen.
+- Spieler sehr schwer machen: Wenn der Spieler eine hohe Masse hat, kann er nicht von einfachen Partikeln unterdrückt werden.
+- [[Halb gefixt: Der Spieler bleibt auf schrägen Flächen nicht mehr hängen]] Springen auf schrägen Flächen ist brutal kaputt
+
+### Gefixte Bugs ###
+- [[FIXED]] Die Near-Plane der Portal-Kameras ist verbesserungsfähig, denn ihre Normale sollte nicht unbedingt parallel zur Kamera-Blickrichtung sein.
+- [[FIXED]] Rigid Bodies sind ziemlich wonky in Portalen. Möglicherweise ist die Intersection fehlerhaft.
+- [[FIXED]] Die Kamera überschlägt sich wenn der Spieler nach unten oder oben guckt.
+- [[FIXED]] Wenn zwei Rigid Cubes ein Portal berühren gibt es einen Segfault.
+
+
+
+Legende: 
+[x]: Feature ist weitestgehend korrekt implementiert.
+[/]: Feature ist buggy oder unvollständig implementiert.
+[?]: Ist das Feature implementiert? Keine Ahnung...
+
+### Vollständigkeit nach Aufgaben des Arbeitsblattes ###
+## Aufgabe 7.1: Portal-Funktionalität [30]
+# a) Portal-Platzierung [7]
+	[x] Portale sollen nicht überlappend plaziert werden können.
+	[x] Die Platzierung eines Portals soll durch ein vom Spieler verschossenes Partikelbündel visualisiert werden.
+	[x] Portale sollen nur an besonderen Wänden, Böden und Decken platziert werden können, die in herausragender Weise gekennzeichnet sind
+
+# b) Objekt-Duplizierung [18]
+	[x] Um Objekte zwischen Portalen zu verschieben, müssen diese dupliziert werden.
+	[x] Dabei müssen sich beide Objekte gleich verhalten. Interagiert beispielsweise ein Objekt auf einer Seite des Portals mit einem anderen, wirkt sich das auf das Duplikat in gleicher Weise aus.
+	[x] Alle Constraints sollen beim Durchqueren eines Portals selbstverständlich erhalten bleiben.
+	[x] Nachdem ein Objekt ein Portal durchlaufen hat, wird sein Duplikat gelöscht.
+
+# c) Kollisionsanpassung [5]
+	[x] Da die Portale lediglich auf existierender Geometrie platziert werden, muss zum Durchqueren die Kollision der das Portal beherbergenden Fläche nur im Portalbereich selbst ausgeschaltet werden.
+	// Das ist etwas lockerer Implementiert, indem einfach die komplette Kollision für alle Dreiecke ausgeschaltet ist, solange mindestens ein Partikel des Körpers ein Portal berührt.
+
+## Aufgabe 7.2: Rendering und Gestaltung [40]
+# a) Wasser-Rendering [25]
+	[x] Damit das Wasser möglichst realistisch wirkt, soll es passend gerendert werden.
+	[x] Das Ziel ist es, teilweise durchsichtiges Wasser in beliebiger Farbe zu zeichnen,
+	[/] welches im besten Fall weiß aufschäumt, wenn es sich in Wellen überschlägt.
+	// Letzteres ist zwar implementiert, aber kaum zu sehen. Darauf sollte man am besten in der README hinweisen
+	// Ferner kommt's gerne mal zu abstürzen, wenn die Gridsize zu klein ist, am besten sollte der Regler sinnvoll gedeckelt werden.
+
+# b) Portal-Rendering [7]
+	[x] Damit Portale nicht nur als langweiliges einfarbiges Rechteck an einer Wand erscheinen, soll der Blick durch ein Portal implementiert werden.
+	[x] Der Inhalt des Portals ergibt sich abhängig vom Blickwinkel der Spielerkamera.
+	[x] Zusätzlich sollen Partikel, die keine physikalischen Effekte haben, um den Rand der Portale schwirren um einen magischen Portal-Rand-Effekt zu erzielen.
+
+# c) Gestaltung und Modellierung [3]
+	[x] Beliebig vorkommende starre Objekte werden mit Hilfe von Blender erstellt.
+	[x] Weitere Verschönerungen sollen hier auch vorgenommen werden.
+	// Darunter fällt eigentlich nur der Companion Cube
+
+# d) Objekt-Rendering [2]
+	[x] Alle vorkommenden starren Objekte, welche aus Partikeln bestehen, sollen ebenfalls gerendert werden.
+	// Das ist auch nur der Companion Cube
+
+# e) HUD-Rendering [3]
+	[x] Der Spieler soll mittels eines Fadenkreuzes erkennen, ob ein Portal an der Position, an die er gerade blickt, platziert werden kann.
+
+## Aufgabe 7.3: Steuerung und Spiellogik [30]
+# a) Geometrie Kollision [15]
+	[x] Um ein Level zu designen, müssen die vorher verwendeten Halbebenen durch Dreiecksmeshes oder AABBs ersetzt werden.
+	[x] Deshalb ist das Ziel Particle-Dreickesmesh Intersection oder AABB Intersection mitsamt deren Auflösung zu implementieren.
+
+# b) Steuerung und Perspektive [5]
+	[x] Es soll möglich sein, sich in einer First-Person Perspektive durch das Level zu bewegen.
+	[x] Hierzu soll eine passende Kamera und Steuerung implementiert werden.
+	[x] Um korrekt mit der Levelgeometrie und den Partielobjekten zu ineragieren, besteht der Spieler selbst auch aus Partikeln.
+	[?] Er soll ferner im Wasser aufsteigen können.
+
+# c) Leveldesign [10]
+	[/] Mit Hilfe der vorher implementierten Funktionalitäten soll ein Level erstellt werden, in dem es kleine Teilrätsel zu lösen gilt.
